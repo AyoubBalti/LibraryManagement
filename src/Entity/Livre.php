@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LivreRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LivreRepository::class)]
@@ -30,6 +32,21 @@ class Livre
 
     #[ORM\Column(type: 'bigint')]
     private $isbn;
+
+    #[ORM\ManyToMany(targetEntity: Auteur::class, inversedBy: 'livres')]
+    private $Relation;
+
+    #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'livres')]
+    private $relation;
+
+    #[ORM\ManyToOne(targetEntity: Editeur::class, inversedBy: 'livres')]
+    private $relation2;
+
+    public function __construct()
+    {
+        $this->Relation = new ArrayCollection();
+        $this->relation = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,6 +121,42 @@ class Livre
     public function setIsbn(string $isbn): self
     {
         $this->isbn = $isbn;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Auteur[]
+     */
+    public function getRelation(): Collection
+    {
+        return $this->Relation;
+    }
+
+    public function addRelation(Auteur $relation): self
+    {
+        if (!$this->Relation->contains($relation)) {
+            $this->Relation[] = $relation;
+        }
+
+        return $this;
+    }
+
+    public function removeRelation(Auteur $relation): self
+    {
+        $this->Relation->removeElement($relation);
+
+        return $this;
+    }
+
+    public function getRelation2(): ?Editeur
+    {
+        return $this->relation2;
+    }
+
+    public function setRelation2(?Editeur $relation2): self
+    {
+        $this->relation2 = $relation2;
 
         return $this;
     }
