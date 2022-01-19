@@ -34,18 +34,18 @@ class Livre
     private $isbn;
 
     #[ORM\ManyToMany(targetEntity: Auteur::class, inversedBy: 'livres')]
-    private $Relation;
+    private $auteurs;
 
     #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'livres')]
-    private $relation;
+    private $categories ;
 
     #[ORM\ManyToOne(targetEntity: Editeur::class, inversedBy: 'livres')]
-    private $relation2;
+    private $editeurs;
 
     public function __construct()
     {
-        $this->Relation = new ArrayCollection();
-        $this->relation = new ArrayCollection();
+        $this->auteurs = new ArrayCollection();
+        $this->categories  = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -130,33 +130,33 @@ class Livre
      */
     public function getRelation(): Collection
     {
-        return $this->Relation;
+        return $this->auteurs;
     }
 
-    public function addRelation(Auteur $relation): self
+    public function addRelation(Auteur $categories ): self
     {
-        if (!$this->Relation->contains($relation)) {
-            $this->Relation[] = $relation;
+        if (!$this->auteurs->contains($categories )) {
+            $this->auteurs[] = $categories ;
         }
 
         return $this;
     }
 
-    public function removeRelation(Auteur $relation): self
+    public function removeRelation(Auteur $categories ): self
     {
-        $this->Relation->removeElement($relation);
+        $this->auteurs->removeElement($categories );
 
         return $this;
     }
 
     public function getRelation2(): ?Editeur
     {
-        return $this->relation2;
+        return $this->editeurs;
     }
 
-    public function setRelation2(?Editeur $relation2): self
+    public function setRelation2(?Editeur $editeurs): self
     {
-        $this->relation2 = $relation2;
+        $this->editeurs = $editeurs;
 
         return $this;
     }
