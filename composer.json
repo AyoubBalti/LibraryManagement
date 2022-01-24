@@ -16,7 +16,9 @@
         "symfony/framework-bundle": "6.0.*",
         "symfony/proxy-manager-bridge": "6.0.*",
         "symfony/runtime": "6.0.*",
-        "symfony/yaml": "6.0.*"
+        "symfony/webpack-encore-bundle": "^1.13",
+        "symfony/yaml": "6.0.*",
+        "twig/twig": "3.x"
     },
     "config": {
         "allow-plugins": {
