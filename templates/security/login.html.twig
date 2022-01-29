@@ -3,37 +3,35 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-<div class="form-container">
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger" style="color:red;font-size:1.5rem;">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+
+<div class="login-form-container">
+
+    <form method="post">
+        <h3>sign in</h3>
+        <span>username</span>
+        <input type="email"  name="email" value="{{ last_username }}" class="box" placeholder="enter your email" id="">
+        <span>password</span>
+        <input type="password" name="password" id="inputPassword" class="box" placeholder="enter your password" id="">
+        <div class="checkbox">
+            <input type="checkbox" name="" id="remember-me">
+            <label for="remember-me"> remember me</label>
         </div>
-    {% endif %}
+          <input type="hidden" name="_csrf_token"
+                       value="{{ csrf_token('authenticate') }}"
+                >
+        <input type="submit" value="sign in" class="btn">
+        <p>forget password ? <a href="#">click here</a></p>
+        <p>don't have an account ? <a href="{{ path('app_register')}}">create one</a></p>
+    </form>
 
-    <h3>sign in</h3>
-			<span>Email</span>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="box" autocomplete="email"  placeholder="enter your email" required autofocus>
-    <span>password</span>
-    <input type="password" name="password" id="inputPassword" class="box" placeholder="enter your password" autocomplete="current-password" required>
-
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
-        <div class="checkbox" name="" id="remember-me">
-         <input type="checkbox" name="_remember_me">
-            <label for="remember-me">
-                Remember me
-            </label>
-        </div>
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
 </div>
+<script>
+window.addEventListener('load', (event) => {
+  console.log('page is fully loaded');
+  loginForm.classList.toggle('active');
+});
+</script>
+   
+  <!--Main Navigation-->
 {% endblock %}

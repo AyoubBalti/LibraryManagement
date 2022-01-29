@@ -7,34 +7,96 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    const ROLE_ADMIN = "ROLE_ADMIN";
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     */
     private $email;
 
-    #[ORM\Column(type: 'json')]
+    /**
+     * @ORM\Column(type="json")
+     */
     private $roles = [];
 
-    #[ORM\Column(type: 'string')]
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     * @Assert\Length(min="8",minMessage="Votre mot de passe doit faire miminum 8 caracteres")
+     * @Assert\EqualTo(propertyPath="comfirm_password", message="Vous n'avez pas tapé le meme mot de passe")
+     */
     private $password;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isVerified = false;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="user")
+     */
+    private $bookings;
+    /** 
+     * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le meme mot de passe")
+     */
+    public $comfirm_password;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $nom;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $prenom;
 
-    #[ORM\Column(type: 'integer')]
-    private $cin;
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $date_naissance;
 
-    #[ORM\Column(type: 'integer')]
-    private $telephone;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $phone;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $photo;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Review::class, mappedBy="user")
+     */
+    private $reviews;
+
+
+
+    public function __construct()
+    {
+        $this->bookings = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -64,6 +126,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
      * @see UserInterface
      */
     public function getRoles(): array
@@ -83,7 +153,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @see PasswordAuthenticatedUserInterface
+     * @see UserInterface
      */
     public function getPassword(): string
     {
@@ -98,12 +168,113 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Returning a salt is only needed, if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
+     * @see UserInterface
+     */
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    /**
      * @see UserInterface
      */
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array(self::ROLE_ADMIN, $this->getRoles());
+    }
+
+    /**
+     * @return Collection|Booking[]
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings[] = $booking;
+            $booking->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getUser() === $this) {
+                $booking->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getrole()
+    {
+        $roles="";
+        foreach ($this->getRoles() as $role) {
+            if($role == self::ROLE_ADMIN){
+                $roles .= "Admin "; ; 
+            }
+            if($role == 'ROLE_USER'){
+                $roles .= "User "; ; 
+            }
+        }
+        return  $roles;
+    }
+
+    public function getLanguage(): ?string
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(string $language): self
+    {
+        $this->language = $language;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->id." - ".$this->nom." ".$this->prenom;
     }
 
     public function getNom(): ?string
@@ -130,26 +301,68 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCin(): ?int
+    public function getDateNaissance(): ?\DateTimeInterface
     {
-        return $this->cin;
+        return $this->date_naissance;
     }
 
-    public function setCin(int $cin): self
+    public function setDateNaissance(\DateTimeInterface $date_naissance): self
     {
-        $this->cin = $cin;
+        $this->date_naissance = $date_naissance;
 
         return $this;
     }
 
-    public function getTelephone(): ?int
+    public function getPhone(): ?string
     {
-        return $this->telephone;
+        return $this->phone;
     }
 
-    public function setTelephone(int $telephone): self
+    public function setPhone(string $phone): self
     {
-        $this->telephone = $telephone;
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Review[]
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getUser() === $this) {
+                $review->setUser(null);
+            }
+        }
 
         return $this;
     }

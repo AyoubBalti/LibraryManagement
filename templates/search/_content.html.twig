@@ -1,0 +1,24 @@
+ {% for livre in livres %}
+            <div class="col-md-3 mb-4">
+              <div class="card mb-4 mb-md-0">
+                  <div class="card" >
+                    <img
+                      src="images/book{{asset(livre.image)}}"
+                      class="card-img-top"
+                      height="300px"
+                      alt=""
+                    />
+                    </ul>
+                    <div class="card-body">
+                      <a href="{{ path('bookdetails',{'id': livre.id}) }}" class="card-link"><h2>Book details</h2></a>
+                      
+                      {% if app.user %}
+                        <a href="{{path('booking_new',{'id': livre.id})}}" class="card-link"><h2>Book Now</h2></a>
+                      {% else %}
+                        <a href="{{path('app_login')}}" class="card-link">Login</a>
+                      {% endif %}       
+                    </div>
+                  </div>
+              </div>
+            </div>
+          {% endfor %}

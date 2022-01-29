@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SearchController!{% endblock %}
+
+{% block body %}
+<section style="background-color: #eee;">
+    <div class="row">
+      <div class="col-lg-3">
+
+        <div class="card mb-4">
+          <div class="card-body ">
+          <form id="filters">
+
+            <h2>Categorie</h2>
+            {% for categorie in categories %}
+            <div class="form-outline">
+              <input type="checkbox" id="cat{{categorie.id}}" name="categories[]" value="{{categorie.id}}" class="form-check-input" autocompleted/>
+              <label class="form-check-label" for="flexCheckChecked">{{ categorie.nom }}</label>
+            </div>
+            {% endfor %}
+            </from>
+          </div>
+        </div>
+
+       
+      </div>
+
+      <div class="col-lg-9">
+
+        <div class="row" id="content">
+         {% include "search/_content.html.twig" %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="{{asset('js/filters.js')}} "> </script>
+{% endblock %}

@@ -7,38 +7,50 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EditeurRepository::class)]
+/**
+ * @ORM\Entity(repositoryClass=EditeurRepository::class)
+ */
 class Editeur
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
-    #[ORM\Column(type: 'string', length: 30)]
-    private $nomEditeur;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $nom;
 
-    #[ORM\Column(type: 'string', length: 30)]
-    private $prenomEditeur;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $prenom;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $addresse;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $pays;
 
-    #[ORM\Column(type: 'string', length: 100)]
-    private $adresse;
-
-    #[ORM\Column(type: 'integer')]
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $telephone;
 
-    #[ORM\OneToMany(mappedBy: 'editeurs', targetEntity: Livre::class)]
-    private $auteurs;
-
-    #[ORM\ManyToMany(targetEntity: Livre::class, mappedBy: 'editeur')]
+    /**
+     * @ORM\OneToMany(targetEntity=Livre::class, mappedBy="editeur")
+     */
     private $livres;
 
     public function __construct()
     {
-        $this->auteurs = new ArrayCollection();
         $this->livres = new ArrayCollection();
     }
 
@@ -47,26 +59,38 @@ class Editeur
         return $this->id;
     }
 
-    public function getNomEditeur(): ?string
+    public function getNom(): ?string
     {
-        return $this->nomEditeur;
+        return $this->nom;
     }
 
-    public function setNomEditeur(string $nomEditeur): self
+    public function setNom(string $nom): self
     {
-        $this->nomEditeur = $nomEditeur;
+        $this->nom = $nom;
 
         return $this;
     }
 
-    public function getPrenomEditeur(): ?string
+    public function getPrenom(): ?string
     {
-        return $this->prenomEditeur;
+        return $this->prenom;
     }
 
-    public function setPrenomEditeur(string $prenomEditeur): self
+    public function setPrenom(string $prenom): self
     {
-        $this->prenomEditeur = $prenomEditeur;
+        $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getAddresse(): ?string
+    {
+        return $this->addresse;
+    }
+
+    public function setAddresse(string $addresse): self
+    {
+        $this->addresse = $addresse;
 
         return $this;
     }
@@ -83,24 +107,12 @@ class Editeur
         return $this;
     }
 
-    public function getAdresse(): ?string
-    {
-        return $this->adresse;
-    }
-
-    public function setAdresse(string $adresse): self
-    {
-        $this->adresse = $adresse;
-
-        return $this;
-    }
-
-    public function getTelephone(): ?int
+    public function getTelephone(): ?string
     {
         return $this->telephone;
     }
 
-    public function setTelephone(int $telephone): self
+    public function setTelephone(string $telephone): self
     {
         $this->telephone = $telephone;
 
@@ -119,7 +131,7 @@ class Editeur
     {
         if (!$this->livres->contains($livre)) {
             $this->livres[] = $livre;
-            $livre->addEditeur($this);
+            $livre->setEditeur($this);
         }
 
         return $this;
@@ -128,13 +140,16 @@ class Editeur
     public function removeLivre(Livre $livre): self
     {
         if ($this->livres->removeElement($livre)) {
-            $livre->removeEditeur($this);
+            // set the owning side to null (unless already changed)
+            if ($livre->getEditeur() === $this) {
+                $livre->setEditeur(null);
+            }
         }
 
         return $this;
     }
-
-
-
-    
+    public function __toString()
+    {
+        return $this->id." - ".$this->nom." ".$this->prenom;
+    }
 }

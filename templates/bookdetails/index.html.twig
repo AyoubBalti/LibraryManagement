@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BookdetailsController!{% endblock %}
+
+{% block body %}
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row">
+      <div class="container">
+          <div class="card mb-4">
+              <div class="card-body mb-4 mb-md-0">
+                  <div class="card">
+                      <div class="row mb-4">
+                          <div class="col-sm-6 col-lg-8">
+                              <img
+                                  src="/images/book{{asset(livre.image)}}"
+                                  class="card-img-top  mb-4"
+                                  alt="Chicago Skyscrapers "
+                                  height="500px"
+                              />        
+                          </div>
+                          <div class="col-6 col-lg-4">
+                              <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><h1 class="card-title">Titre : {{ livre.titre }}</h1></li>
+                                <li class="list-group-item"><h3 class="card-body">Author : {% for aut  in livre.auteur  %}{{aut.nom}} {{aut.prenom}} {% endfor %}</h3></li>
+                                <li class="list-group-item"><h3 class="card-body">Numbre of page : {{ livre.nbrpage }}</h3></li>
+                                <li class="list-group-item"><h3 class="card-body">Numbre of book : {{ livre.qtestock }}</h3></li>
+                                <li class="list-group-item"><h3 class="card-body">Edition date : {{ livre.dateedition | date('d F Y')}}</h3></li>
+                                <li class="list-group-item"><h3 class="card-body">Code ISBN : {{ livre.isbn }}</h3></li>
+                                <li class="list-group-item"><h3 class="card-body">Language : {{ livre.language }}</h3></li>
+                                {% if livre.editeur %}
+                                <li class="list-group-item"><h3 class="card-body">Edituers :{% for edit  in livre.editeur  %}{{edit.nom}} {% endfor %}</h3></li>
+                                {% endif %}
+                                <li class="list-group-item"><h3 class="card-body">Categories :{% for cat  in livre.categorie  %}{{cat.nom}} {% endfor %}</h3></li>
+                                <li class="list-group-item">  
+                                {% if app.user %}
+                                  {% if livre.qtestock == 0 %}
+                                    <div class="col"><a href="#" class="btn btn-primary  btn-lg btn-block" >En rupture</a></div></li>
+                                  {% else %}
+                                    <div class="col"><a href="{{path('booking_new',{'id': livre.id})}}" class="btn btn-primary  btn-lg btn-block" >Book Now</a></div></li>
+                                  {% endif %}
+                                {% else %}
+                                  <div class="col"><a href="{{path('app_login')}}" class="btn btn-primary  btn-lg btn-block" >Login</a></div></li>
+                                {% endif %}                              
+                                
+                              </ul>
+                            </div>
+                      </div>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+

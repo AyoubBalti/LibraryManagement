@@ -7,32 +7,52 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: AuteurRepository::class)]
+/**
+ * @ORM\Entity(repositoryClass=AuteurRepository::class)
+ */
 class Auteur
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
-    #[ORM\Column(type: 'string', length: 30)]
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $nom;
 
-    #[ORM\Column(type: 'string', length: 30)]
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $prenom;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $telephone;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $date_naissance;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
     private $biographie;
 
-    #[ORM\ManyToMany(targetEntity: Livre::class, mappedBy: 'auteur')]
+    /**
+     * @ORM\ManyToMany(targetEntity=Livre::class, mappedBy="auteur")
+     */
     private $livres;
 
     public function __construct()
     {
         $this->livres = new ArrayCollection();
     }
-
-    
 
     public function getId(): ?int
     {
@@ -63,6 +83,30 @@ class Auteur
         return $this;
     }
 
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(string $telephone): self
+    {
+        $this->telephone = $telephone;
+
+        return $this;
+    }
+
+    public function getDateNaissance(): ?\DateTimeInterface
+    {
+        return $this->date_naissance;
+    }
+
+    public function setDateNaissance(\DateTimeInterface $date_naissance): self
+    {
+        $this->date_naissance = $date_naissance;
+
+        return $this;
+    }
+
     public function getBiographie(): ?string
     {
         return $this->biographie;
@@ -83,22 +127,27 @@ class Auteur
         return $this->livres;
     }
 
-    public function addlivres(Livre $livres): self
+    public function addLivre(Livre $livre): self
     {
-        if (!$this->livres->contains($livres)) {
-            $this->livres[] = $livres;
-            $livres->addAuteur($this);
+        if (!$this->livres->contains($livre)) {
+            $this->livres[] = $livre;
+            $livre->addAuteur($this);
         }
 
         return $this;
     }
 
-    public function removelivres(Livre $livres): self
+    public function removeLivre(Livre $livre): self
     {
-        if ($this->livres->removeElement($livres)) {
-            $livres->removeAuteur($this);
+        if ($this->livres->removeElement($livre)) {
+            $livre->removeAuteur($this);
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->id." - ".$this->nom." ".$this->prenom;
     }
 }

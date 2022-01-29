@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% block body %}
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <h2 class="my-3"> {{ user.prenom}} {{ user.nom}}</h2>
+              <h3 class="text-muted mb-4">{{user.email}}</h3>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <h3 class="mb-0">Full Name</h3>
+                  </div>
+                  <div class="col-sm-9">
+                    <h3 class="text-muted mb-0">{{ user.prenom}} {{ user.nom}}</h3>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <h3 class="mb-0">Email</h3>
+                  </div>
+                  <div class="col-sm-9">
+                    <h3 class="text-muted mb-0">{{ user.email}}</h3>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <h3 class="mb-0">Phone</h3>
+                  </div>
+                  <div class="col-sm-9">
+                    <h3 class="text-muted mb-0">{{ user.phone}}</h3>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <h3 class="mb-0">Birthday</h3>
+                  </div>
+                  <div class="col-sm-9">
+                    <h3 class="text-muted mb-0">{{  user.dateNaissance ? user.dateNaissance|date('Y-m-d') : ''}}</h3>
+                  </div>
+                </div>
+                <hr>
+                
+              </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card mb-4">
+              <div class="card-body">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>livre</th>
+                        <th>approver</th>
+                        <th>recuperate book date </th>
+                        <th>return date</th>
+                        <th>expected retrun date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for booking in bookings %}
+                      <tr>
+                        <th>{{booking.livre}}</th>
+                        <th>{{booking.approver ? "approver" : "not approver"}}</th>
+                        <td>{{booking.bookingdate|date('Y-m-d')}}</td>
+                        <td>{{ booking.returndate ? booking.returndate|date('Y-m-d') : "not returned yet"}}</td>
+                        <td>{{booking.expectedretrundate|date('Y-m-d')}}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+</section>
+
+{% endblock %}

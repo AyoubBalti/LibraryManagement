@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+
+<div class="login-form-container">
+
+    <form method="post">
+        <h3>Register</h3>
+        <span>Prenom</span>
+         {{ form_widget(registrationForm.prenom,{'attr':{'class' : 'box'}}) }}
+        <span>Nom</span>
+        {{ form_widget(registrationForm.nom,{'attr':{'class' : 'box'}}) }}
+        <span>Email</span>
+        {{ form_widget(registrationForm.email,{'attr':{'class' : 'box'}}) }}
+          {{ form_row(registrationForm._token) }}
+        <span>Date Naissance</span>
+        {{ form_widget(registrationForm.date_naissance,{'attr':{'class' : 'box'}}) }}
+                <span>Telephone</span>
+        {{ form_widget(registrationForm.phone,{'attr':{'class' : 'box'}}) }}
+        <span>Password</span>
+        {{ form_widget(registrationForm.plainPassword,{'attr':{'class' : 'box'}}) }}
+        <input type="submit" value="sign in" class="btn">
+        <p>forget password ? <a href="#">click here</a></p>
+        <p>don't have an account ? <a href="#">create one</a></p>
+    </form>
+
+</div>
+<script>
+window.addEventListener('load', (event) => {
+  console.log('page is fully loaded');
+  loginForm.classList.toggle('active');
+});
+</script>
+
+    
+{% endblock %}

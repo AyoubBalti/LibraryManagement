@@ -1,15 +1,47 @@
 {% extends 'base.html.twig' %}
-{% block title %}Home
-{% endblock %}
 
+{% block title %}Home{% endblock %}
 
 {% block body %}
 
-	{% include 'home/main.html.twig' %}
-	{% include 'home/featured.html.twig' %}
-	{% include 'home/arrivals.html.twig' %}
-	{% include 'home/reviews.html.twig' %}
-	{% include 'base/footer.html.twig' %}
+               <div class="search-form">
+                {{ form_start(form) }}
+                {{ form_widget(form.field_name,{'attr':{'class' : 'box'}}) }}
+                <!-- <input type="search" class="" placeholder="Search" aria-label="Search"aria-describedby="search-addon" />-->
+                <button type="submit" class="btn btn-outline-white">search</button>
+                {{ form_end(form) }}
+              </div>
+<section class="featured" id="featured">
+
+    <h1 class="heading"> <span>Books</span> </h1>
+
+    <div class="swiper featured-slider">
+
+        <div class="swiper-wrapper">
+{% for livre in livres %}
+            <div class="swiper-slide box">
+                <div class="image">
+                    <img src="images/book{{asset(livre.image)}}" class="img-fluid">
+                </div>
+                <div class="content">
+                <h3>Titre : {{ livre.titre }}</h3>
+                <h3>Prix : {{ livre.prix }}</h3>
+                <h3>Stock : {{ livre.qteStock }}</h3>
+                <h3>Pages : {{ livre.nbrPage }}</h3>
+                <h3>ISBN : {{ livre.isbn }}</h3>
+                  <a href="{{ path('bookdetails',{'id': livre.id}) }}" class="btn btn-primary">Details</a>
+                </div>
+            </div>
+
+        </div>
+{% endfor %}
+
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+
+    </div>
+
+</section>
 
 
 {% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Booking{% endblock %}
+
+{% block body %}
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row">
+      <div class="container">
+        <div class="card mb-8">
+          <div class="card-body">
+            {{ form_start(form) }}
+              <div class="row mb-4">
+                <div class="col">
+                  <label class="form-label" for="form3Example1"><h2>take date</h2></label>
+                  <div class="form-outline">
+                    {{ form_widget(form.booking_date,{'attr':{'class' : 'form-control'}}) }}
+                  </div>
+                </div>
+                <div class="col">
+                  <label class="form-label" for="form3Example2"><h2>Retrun date</h2></label>
+                  <div class="form-outline">
+                    {{ form_widget(form.expected_retrun_date,{'attr':{'class' : 'form-control'}}) }}
+                  </div>
+                </div>
+              </div> 
+              <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+            {{ form_end(form) }}
+          </div>
+          <div class="card-body">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    window.onload = () => {
+        let calendarElt = document.querySelector("#calendrier")
+        let calendar = new FullCalendar.Calendar(calendarElt, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                start: 'prev,next today',
+                center: 'title',
+                end: 'dayGridMonth,timeGridWeek'
+            },
+            events : {{ data | raw}}
+        })
+
+        calendar.render()
+    }
+</script>
+
+{% endblock %}
